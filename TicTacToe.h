@@ -12,6 +12,7 @@ enum Result {XWIN = 101, OWIN, TIE, NOWIN};
 
 class Board {
 private:
+  // members
   const int size;
   std::vector<char> board;
   Turn turn;
@@ -19,14 +20,17 @@ private:
   int locationsFilled;
 
 public:
+  // constructor
   Board(int);
-  void changeTurn();
-  void start(std::istream&);
+
+  // game utility functions
+  void printBoard() const;
   int getInput(std::istream&);
   void setLoc(int location);
+  void changeTurn();
   bool checkBoth();
-  bool checkWinner(const char);
-  void printWinner(); 
+  bool checkWinner(const char) const;
+  void printWinner() const; 
 };
 
 #endif

@@ -1,10 +1,19 @@
+// main driver
+
 #include <iostream>
+#include <cstdlib>
 #include "TicTacToe.h"
 
 /*
-___|___|___
-___|___|___
-   |   |   
+      |      |      
+      |      |      
+______|______|______
+      |      |      
+      |      |      
+______|______|______
+      |      |      
+      |      |      
+      |      |      
 */
 
 int main() {
@@ -12,6 +21,9 @@ int main() {
 
   // use game loop instead of recursion in getInput
   while (true) {
+    std::cout << std::flush;
+    system("clear");
+    play.printBoard();
     int location = play.getInput(std::cin);
     play.setLoc(location);
     play.changeTurn();

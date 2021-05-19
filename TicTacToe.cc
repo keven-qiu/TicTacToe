@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <sstream>
 #include "TicTacToe.h"
 
 // Board Constructor
@@ -13,35 +15,48 @@ Board::Board(int boardSize):
   locationsFilled(0)
 {
   for (int i = 0; i < boardSize*boardSize; ++i)
-    board[i] = i+1;
+    board[i] = '0'+i+1;
 }
 
-void Board::changeTurn() {
-  if (this->turn == X)
-    this->turn = O;
-  else
-    this->turn = X;
+// print TicTacToe board to screen
+// updates with new chars in member board
+// does not mutate any member variables
+// return: void
+void Board::printBoard() const {
+  std::cout << "         |         |         " << std::endl;
+  std::cout << "    " << this->board[0] << "    |    " << this->board[1] << "    |    " << this->board[2] << "    " << std::endl;
+  std::cout << "_________|_________|_________" << std::endl;
+
+  std::cout << "         |         |         " << std::endl;
+  std::cout << "    " << this->board[3] << "    |    " << this->board[4] << "    |    " << this->board[5] << "    " << std::endl;
+  std::cout << "_________|_________|_________" << std::endl;
+  std::cout << "         |         |         " << std::endl;
+  std::cout << "    " << this->board[6] << "    |    " << this->board[7] << "    |    " << this->board[8] << "    " << std::endl;
+  std::cout << "         |         |         " << std::endl;
 }
 
-void Board::start(std::istream &in) {
-  Board::getInput(in);
-}
-
-int Board::getInput(std::istream &in) {
+// getInput gets location input from user
+// param:
+// std::istream& in: input stream reference
+// returns location of input
+int Board::getInput(std::istream& in) {
   int location;
   std::cout << "Print location of ";
   if (this->turn == X) std::cout << "X: ";
   else std::cout << "O: ";
 
-  ++(this->locationsFilled);
-
-  char c;
-  in >> c; 
-  if (!(c >= '1' && c <= '9')) {
-    std::cout << "Please print a number from 1 to " << this->size*this->size << std::endl;
-    getInput(in);
+  std::string s;
+  while (in >> s) {
+    if (in.eof())
+      exit(0);
+    std::istringstream iss{s};
+    // if iss can be written to an int or if location is out of bounds
+    if (!(iss >> location) || (location < 1 || location > 9))
+      std::cout << "Please print a number from 1 to " << this->size*this->size << std::endl;
+    else break;
   }
-  location = c-'0';
+  
+  ++(this->locationsFilled);
   
   return location;
 }
@@ -51,13 +66,23 @@ void Board::setLoc(int location) {
   this->board[location-1] = c;
 }
 
+// changeTurn changes member variable turn
+// to the person's turn
+// return: void
+void Board::changeTurn() {
+  if (this->turn == X)
+    this->turn = O;
+  else
+    this->turn = X;
+}
+
 bool Board::checkBoth() {
   bool checkX = checkWinner('X');
   bool checkO = checkWinner('O');
 
   if (checkX) this->winner = XWIN;
   else if (checkO) this->winner = OWIN;
-  else if (this->locationsFilled == this->size && checkX && checkO) this->winner = TIE;
+  else if (this->locationsFilled == this->size*this->size && this->winner == NOWIN) this->winner = TIE;
 
   if (this->winner != NOWIN)
     return true;
@@ -65,7 +90,11 @@ bool Board::checkBoth() {
     return false;
 }
 
-bool Board::checkWinner(const char letter) {
+// check if there are any winners in current round
+// does not mutate any member variables
+// params:
+// const char letter: letter of person
+bool Board::checkWinner(const char letter) const {
   // check rows
   for (int i = 0; i < this->size*this->size; i+=3)
     if (board[i] == letter && board[i]==board[i+1] && board[i+1]==board[i+2])
@@ -83,14 +112,20 @@ bool Board::checkWinner(const char letter) {
   return false;
 }
 
-void Board::printWinner() {
+// print winner of the game
+// does not mutate any member variables
+// return: void
+void Board::printWinner() const {
+  std::cout << "--------------------" << std::endl;
   if (this->winner == XWIN)
     std::cout << "X";
   else if (this->winner == OWIN)
     std::cout << "O";
   else {
     std::cout << "Tie!" << std::endl;
+    std::cout << "--------------------" << std::endl;
     return;
   }
   std::cout << " is the winner!" << std::endl;
+  std::cout << "--------------------" << std::endl;
 }
