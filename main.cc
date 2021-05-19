@@ -8,7 +8,7 @@
 #if OS == 1
 #define clearScreen "clear"
 #else
-#define clearWindows "CLS";
+#define clearWindows "CLS"
 #endif
 
 /*
